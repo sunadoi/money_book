@@ -35,17 +35,17 @@ class MoneyBook extends Component {
 class MoneyEntry extends Component {
   constructor(props) {
     super(props)
-    this.state = {date: '', item: '', amount: '', payingIn: true}
-  }
-  onChangeValue(event) {
-    this.setState({[event.target.name] : event.target.value})
-  }
-  onChanePayingIn(event) {
-    this.setState({payingIn: event.target.value == "on"})
+    this.date   = React.createRef()
+    this.item   = React.createRef()
+    this.amount = React.createRef()
+    this.payingIn = React.createRef()
   }
   onClickSubmit() {
-    this.props.add(this.state.date, this.state.item, this.state.amount * (this.state.payingIn ? 1 : -1))
-    this.setState({date: '', item: '', amount: '', payingIn: false})
+    this.props.add(this.date.current.value, this.item.current.value, this.amount.current.value * (this.payingIn.current.checked ? 1 : -1))
+    this.date.current.value   = ""
+    this.item.current.value   = ""
+    this.amount.current.value = ""
+    this.payingIn.current.checked = true
   }
   render() {
     return (
@@ -53,12 +53,12 @@ class MoneyEntry extends Component {
         <fieldset>
           <legend>記帳</legend>
           <div>
-            <input type="radio" value="on" checked={this.state.payingIn} onChange={(event) => this.onChanePayingIn(event)} /> 入金
-            <input type="radio" value="off" checked={!this.state.payingIn} onChange={(event) => this.onChanePayingIn(event)} /> 出金
+            <input type="radio" defaultChecked name="payingInOut" ref={this.payingIn} /> 入金
+            <input type="radio" name="payingInOut" /> 出金
           </div>
-          <div>日付: <input type="text" value={this.state.date} name="date" onChange={(event) => this.onChangeValue(event)} placeholder="3/15" /> </div>
-          <div>項目: <input type="text" value={this.state.item} name="item" onChange={(event) => this.onChangeValue(event)} placeholder="おこづかい" /> </div>
-          <div>金額: <input type="text" value={this.state.amount} name="amount" onChange={(event) => this.onChangeValue(event)} placeholder="1000" /> </div>
+          <div>日付: <input type="text" defaultValue="" ref={this.date} placeholder="3/15" /> </div>
+          <div>項目: <input type="text" defaultValue="" ref={this.item} placeholder="おこづかい" /> </div>
+          <div>金額: <input type="text" defaultValue="" ref={this.amount} placeholder="1000" /> </div>
           <div> <input type="submit" value="追加" onClick={() => this.onClickSubmit()} /> </div>
         </fieldset>
       </div>
